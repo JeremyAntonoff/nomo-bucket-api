@@ -35,3 +35,6 @@ msbuild.wrn
 
 #db
 *.db
+
+# settings
+appsettings.json
