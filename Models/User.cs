@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace NomoBucket.API.Models
 {
     public class User
@@ -6,5 +9,16 @@ namespace NomoBucket.API.Models
         public string Username { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+
+        public string Gender { get; set; }
+        public string About { get; set; }
+        public string Goals { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public DateTime LastActive { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public string Country { get; set; } 
+        public ICollection<BucketList> BucketList { get; set; }
+        
     }
 }
