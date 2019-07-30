@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NomoBucket.API.Data;
+using NomoBucket.API.Helpers;
 
 namespace NomoBucket.API
 {
@@ -57,11 +59,16 @@ namespace NomoBucket.API
       {
         // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         // app.UseHsts();
+        app.UseExceptionHandler(builder => {
+          builder.Run(async context => {
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+          });
+        });
       }
 
       // app.UseHttpsRedirection();
       app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-      app.UseAuthentication();
+      app.ConfigureExceptionHandler();
       app.UseMvc();
     }
   }
