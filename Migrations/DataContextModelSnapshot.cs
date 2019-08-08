@@ -16,7 +16,7 @@ namespace NomoBucket.API.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
-            modelBuilder.Entity("NomoBucket.API.Models.BucketList", b =>
+            modelBuilder.Entity("NomoBucket.API.Models.BucketListItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -29,7 +29,7 @@ namespace NomoBucket.API.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<int>("Description");
+                    b.Property<string>("Description");
 
                     b.Property<int>("UserId");
 
@@ -37,7 +37,7 @@ namespace NomoBucket.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BucketList");
+                    b.ToTable("BucketListItem");
                 });
 
             modelBuilder.Entity("NomoBucket.API.Models.User", b =>
@@ -63,6 +63,8 @@ namespace NomoBucket.API.Migrations
 
                     b.Property<byte[]>("PasswordSalt");
 
+                    b.Property<string>("PhotoUrl");
+
                     b.Property<string>("Username");
 
                     b.HasKey("Id");
@@ -82,7 +84,7 @@ namespace NomoBucket.API.Migrations
                     b.ToTable("values");
                 });
 
-            modelBuilder.Entity("NomoBucket.API.Models.BucketList", b =>
+            modelBuilder.Entity("NomoBucket.API.Models.BucketListItem", b =>
                 {
                     b.HasOne("NomoBucket.API.Models.User", "User")
                         .WithMany("BucketList")
