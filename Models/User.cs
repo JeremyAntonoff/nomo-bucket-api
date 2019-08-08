@@ -15,10 +15,11 @@ namespace NomoBucket.API.Models
         public string Goals { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime LastActive { get; set; }
-
         public DateTime CreatedAt { get; set; }
         public string Country { get; set; } 
-        public ICollection<BucketList> BucketList { get; set; }
+
+        public string PhotoUrl { get; set; }
+        public ICollection<BucketListItem> BucketList { get; set; }
         
     }
 }
