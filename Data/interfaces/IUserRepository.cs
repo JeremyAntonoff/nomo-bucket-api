@@ -6,8 +6,8 @@ namespace NomoBucket.API.Data
 {
     public interface IUserRepository
     {
-         Task<User> getUser(int userId);
-         Task<IEnumerable<User>> getUsers();
-         Task<bool> saveAll();
+         Task<User> GetUser(int userId);
+         Task<IEnumerable<User>> GetUsers();
+         Task<bool> SaveAll();
     }
 }

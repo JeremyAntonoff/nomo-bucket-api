@@ -14,19 +14,19 @@ namespace NomoBucket.API.Data
     {
       this._context = context;
     }
-    public async Task<User> getUser(int userId)
+    public async Task<User> GetUser(int userId)
     {
       var foundUser = await _context.Users.Include(u => u.BucketList).FirstOrDefaultAsync(u => u.Id == userId);
       return foundUser;
     }
 
-    public async Task<IEnumerable<User>> getUsers()
+    public async Task<IEnumerable<User>> GetUsers()
     {
       var users = await _context.Users.ToListAsync();
       return users;
     }
 
-    public async Task<bool> saveAll()
+    public async Task<bool> SaveAll()
     {
       var changes = await _context.SaveChangesAsync();
       return changes > 0;
