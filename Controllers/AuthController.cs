@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -18,9 +19,11 @@ namespace NomoBucket.API.Controllers
   {
     private readonly IAuthRepository _repo;
     private readonly IConfiguration _config;
+    private readonly IMapper _mapper;
 
-    public AuthController(IAuthRepository repo, IConfiguration config)
+    public AuthController(IAuthRepository repo, IMapper mapper, IConfiguration config)
     {
+      _mapper = mapper;
       _repo = repo;
       _config = config;
     }
@@ -33,15 +36,15 @@ namespace NomoBucket.API.Controllers
       {
         return BadRequest("User already exists");
       }
-      var userToCreate = new User();
-      userToCreate.Username = userRegistrationDto.Username;
+      var userToCreate = _mapper.Map<User>(userRegistrationDto);
 
-      var createdUser = _repo.Register(userToCreate, userRegistrationDto.Password);
+      var createdUser = await _repo.Register(userToCreate, userRegistrationDto.Password);
       if (createdUser == null)
       {
         return BadRequest("Could not create user");
       }
-      return StatusCode(201);
+      var userToReturn = _mapper.Map<UserDetailsDto>(createdUser);
+      return CreatedAtRoute("GetUser",new {controller="users", id = createdUser.Id}, userToReturn);
     }
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserLoginDto userLoginDto)
@@ -54,7 +57,7 @@ namespace NomoBucket.API.Controllers
       }
       var claims = new[]
       {
-          new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+          new Claim("userId", user.Id.ToString()),
           new Claim(ClaimTypes.Name, user.Username)
       };
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Authorization:TokenSecret").Value));
