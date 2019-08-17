@@ -17,6 +17,7 @@ namespace NomoBucket.API.Dtos
         public DateTime CreatedAt { get; set; }
         public string Country { get; set; } 
         public string PhotoUrl { get; set; }
+        public string PublicPhotoId { get; set; }
         public ICollection<BucketListItemDto> BucketList { get; set; }
         
     }
