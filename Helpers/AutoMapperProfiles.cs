@@ -14,6 +14,8 @@ namespace NomoBucket.API.Helpers
                 opt.MapFrom(d => d.DateOfBirth.CalculateAge());
             });
             CreateMap<BucketListItem, BucketListItemDto>();
+            CreateMap<UserRegistrationDto, User>();
+            CreateMap<UserUpdateDto, User>();        
         }
     }
 }
