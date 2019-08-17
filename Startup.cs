@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NomoBucket.API.Config;
 using NomoBucket.API.Data;
 using NomoBucket.API.Helpers;
 
@@ -33,9 +34,11 @@ namespace NomoBucket.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.Configure<CloudinaryConfig>(Configuration.GetSection("CloudinarySettings"));
       services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("SqliteConnection")));
       services.AddScoped<IAuthRepository, AuthRepository>();
       services.AddScoped<IUserRepository, UserRepository>();
+      services.AddScoped<UserActivity>();
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
       .AddJsonOptions(opt => {
