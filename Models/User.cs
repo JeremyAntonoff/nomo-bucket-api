@@ -9,7 +9,6 @@ namespace NomoBucket.API.Models
         public string Username { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
-
         public string Gender { get; set; }
         public string About { get; set; }
         public string Goals { get; set; }
@@ -17,8 +16,8 @@ namespace NomoBucket.API.Models
         public DateTime LastActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public string Country { get; set; } 
-
         public string PhotoUrl { get; set; }
+        public string PublicPhotoId { get; set; }
         public ICollection<BucketListItem> BucketList { get; set; }
         
     }
