@@ -9,8 +9,8 @@ using NomoBucket.API.Data;
 namespace NomoBucket.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190731162225_ExtendUserModel")]
-    partial class ExtendUserModel
+    [Migration("20190821020445_ExtendUserEntity")]
+    partial class ExtendUserEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,13 +33,15 @@ namespace NomoBucket.API.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<string>("PublicPhotoId");
+
                     b.Property<int>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BucketListItem");
+                    b.ToTable("BucketListItems");
                 });
 
             modelBuilder.Entity("NomoBucket.API.Models.User", b =>
@@ -67,23 +69,13 @@ namespace NomoBucket.API.Migrations
 
                     b.Property<string>("PhotoUrl");
 
+                    b.Property<string>("PublicPhotoId");
+
                     b.Property<string>("Username");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("NomoBucket.API.Models.Value", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("values");
                 });
 
             modelBuilder.Entity("NomoBucket.API.Models.BucketListItem", b =>

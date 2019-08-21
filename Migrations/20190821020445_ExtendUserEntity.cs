@@ -3,10 +3,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NomoBucket.API.Migrations
 {
-    public partial class ExtendUserModel : Migration
+    public partial class ExtendUserEntity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "values");
+
             migrationBuilder.AddColumn<string>(
                 name: "About",
                 table: "Users",
@@ -50,8 +53,13 @@ namespace NomoBucket.API.Migrations
                 table: "Users",
                 nullable: true);
 
+            migrationBuilder.AddColumn<string>(
+                name: "PublicPhotoId",
+                table: "Users",
+                nullable: true);
+
             migrationBuilder.CreateTable(
-                name: "BucketListItem",
+                name: "BucketListItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -59,15 +67,16 @@ namespace NomoBucket.API.Migrations
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     CompletedPhotoUrl = table.Column<string>(nullable: true),
+                    PublicPhotoId = table.Column<string>(nullable: true),
                     Completed = table.Column<bool>(nullable: false),
                     CompletedAt = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BucketListItem", x => x.Id);
+                    table.PrimaryKey("PK_BucketListItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BucketListItem_Users_UserId",
+                        name: "FK_BucketListItems_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -75,15 +84,15 @@ namespace NomoBucket.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BucketListItem_UserId",
-                table: "BucketListItem",
+                name: "IX_BucketListItems_UserId",
+                table: "BucketListItems",
                 column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BucketListItem");
+                name: "BucketListItems");
 
             migrationBuilder.DropColumn(
                 name: "About",
@@ -116,6 +125,23 @@ namespace NomoBucket.API.Migrations
             migrationBuilder.DropColumn(
                 name: "PhotoUrl",
                 table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "PublicPhotoId",
+                table: "Users");
+
+            migrationBuilder.CreateTable(
+                name: "values",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_values", x => x.Id);
+                });
         }
     }
 }
