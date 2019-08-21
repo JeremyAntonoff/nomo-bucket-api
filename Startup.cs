@@ -16,70 +16,73 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using nomo_bucket_api.Data.interfaces;
 using NomoBucket.API.Config;
 using NomoBucket.API.Data;
 using NomoBucket.API.Helpers;
 
 namespace NomoBucket.API
 {
-  public class Startup
-  {
-    public Startup(IConfiguration configuration)
+    public class Startup
     {
-      Configuration = configuration;
-    }
-
-    public IConfiguration Configuration { get; }
-
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
-      services.Configure<CloudinaryConfig>(Configuration.GetSection("CloudinarySettings"));
-      services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("SqliteConnection")));
-      services.AddScoped<IAuthRepository, AuthRepository>();
-      services.AddScoped<IUserRepository, UserRepository>();
-      services.AddScoped<UserActivity>();
-      services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-      .AddJsonOptions(opt => {
-        opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-      });
-      services.AddCors();
-      services.AddTransient<Seed>();
-      services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-      {
-        options.TokenValidationParameters = new TokenValidationParameters
+        public Startup(IConfiguration configuration)
         {
-          ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("Authorization:TokenSecret").Value)),
-          ValidateIssuer = false,
-          ValidateAudience = false
-        };
-      });
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.Configure<CloudinaryConfig>(Configuration.GetSection("CloudinarySettings"));
+            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("SqliteConnection")));
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBucketListRepository, BucketListRepository>();
+            services.AddScoped<UserActivity>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+            .AddJsonOptions(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+            services.AddCors();
+            services.AddTransient<Seed>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("Authorization:TokenSecret").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+        }
+
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // app.UseHsts();
+
+            }
+
+            // app.UseHttpsRedirection();
+            //seeder.SeedUsers();
+
+            app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.ConfigureExceptionHandler();
+            app.UseAuthentication();
+            app.UseMvc();
+        }
     }
-
-
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
-    {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
-      else
-      {
-        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-        // app.UseHsts();
-
-      }
-
-      // app.UseHttpsRedirection();
-      //seeder.SeedUsers();
-
-      app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-      app.ConfigureExceptionHandler();
-      app.UseAuthentication();
-      app.UseMvc();
-    }
-  }
 }

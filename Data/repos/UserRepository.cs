@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using NomoBucket.API.Dtos;
 using NomoBucket.API.Models;
 
 namespace NomoBucket.API.Data

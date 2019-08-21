@@ -10,5 +10,7 @@ namespace NomoBucket.API.Dtos
         public string CompletedPhotoUrl { get; set; }
         public bool Completed { get; set; }
         public DateTime CompletedAt { get; set; }
+
+        
     }
 }
