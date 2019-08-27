@@ -2,25 +2,28 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using nomo_bucket_api.Data.interfaces;
+using NomoBucket.API.Data;
 
 namespace nomo_bucket_api.Controllers {
     [Authorize]
     [ApiController]
-    [Route ("/users/{userId}/[controller]")]
+    [Route ("/api/users/{userId}/[controller]")]
     public class BucketListController : ControllerBase {
-        private readonly IBucketListRepository _repo;
-        public BucketListController (IBucketListRepository repo) {
-            _repo = repo;
+        private readonly IBucketListRepository _bucketListRepo;
+        private readonly IUserRepository _userRepo;
+        public BucketListController (IBucketListRepository bucketListRepo, IUserRepository userRepo) {
+            _bucketListRepo = bucketListRepo;
+            _userRepo = userRepo;
 
         }
 
         [HttpGet]
         public async Task<IActionResult> GetBucketList (int userId) {
-            var bucketList = await _repo.GetBucketList(userId);
-            if (bucketList == null) {
+            var user = await _userRepo.GetUser(userId);
+            if (user == null) {
                 return NotFound();
             }
-            return Ok(bucketList);
+            return Ok(user.BucketList);
         }
 
     }
