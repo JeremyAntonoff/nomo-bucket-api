@@ -10,12 +10,15 @@ namespace NomoBucket.API.Helpers
         {
             CreateMap<User, UserListDto>();
             CreateMap<User, UserDetailsDto>()
-            .ForMember(dest => dest.Age, opt => {
+            .ForMember(dest => dest.Age, opt =>
+            {
                 opt.MapFrom(d => d.DateOfBirth.CalculateAge());
             });
             CreateMap<BucketListItem, BucketListItemDto>();
             CreateMap<UserRegistrationDto, User>();
-            CreateMap<UserUpdateDto, User>();        
+            CreateMap<UserUpdateDto, User>();
+            CreateMap<BucketListItemCreationDto, BucketListItem>();
+
         }
     }
 }
