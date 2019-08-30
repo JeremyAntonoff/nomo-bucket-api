@@ -18,6 +18,9 @@ namespace NomoBucket.API.Helpers
             CreateMap<UserRegistrationDto, User>();
             CreateMap<UserUpdateDto, User>();
             CreateMap<BucketListItemCreationDto, BucketListItem>();
+            CreateMap<BucketListItem, FeedItem>();
+
+
 
         }
     }

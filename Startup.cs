@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using nomo_bucket_api.Data.interfaces;
 using NomoBucket.API.Config;
 using NomoBucket.API.Data;
+using NomoBucket.API.Data.repos;
 using NomoBucket.API.Helpers;
 
 namespace NomoBucket.API
@@ -40,6 +41,7 @@ namespace NomoBucket.API
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBucketListRepository, BucketListRepository>();
+            services.AddScoped<IFeedRepository, FeedRepository>();
             services.AddScoped<UserActivity>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
