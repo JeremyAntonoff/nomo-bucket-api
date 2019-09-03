@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using nomo_bucket_api.Data.interfaces;
 using NomoBucket.API.Dtos;
+using NomoBucket.API.Helpers;
 using NomoBucket.API.Models;
 
 namespace NomoBucket.API.Controllers
@@ -21,14 +22,15 @@ namespace NomoBucket.API.Controllers
 
     }
     [HttpGet]
-    public async Task<IActionResult> getFeed()
+public async Task<IActionResult> getFeed([FromQuery]FeedParams feedParams)
     {
-      var feed = await _feedRepo.GetFeed();
+      var feed = await _feedRepo.GetFeed(feedParams);
       if (feed == null)
       {
         throw new System.Exception("Could not retrieve feed");
       }
       var mappedFeed =  _mapper.Map<IEnumerable<FeedItem>>(feed);
+      Response.AddPagination(feed.CurrentPage, feed.PageSize, feed.TotalCount, feed.TotalPages);
       return Ok(mappedFeed);
     }
   }

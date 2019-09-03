@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using nomo_bucket_api.Data.interfaces;
+using NomoBucket.API.Helpers;
 using NomoBucket.API.Models;
 
 namespace NomoBucket.API.Data.repos
@@ -22,10 +23,11 @@ namespace NomoBucket.API.Data.repos
         return feedItem;
         }
 
-    public async Task<IEnumerable<FeedItem>> GetFeed()
+    public async Task<PagedList<FeedItem>> GetFeed(FeedParams feedParams)
         {
-        var feed = await _context.FeedItems.ToListAsync();
-        return feed;
+        var feed = _context.FeedItems;
+        var feedList = await PagedList<FeedItem>.CreatePagedList(feed, feedParams.PageNumber, feedParams.PageSize);
+        return feedList;
         }
 
         public async Task<bool> SaveAll()
