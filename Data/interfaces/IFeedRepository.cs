@@ -5,7 +5,7 @@ using NomoBucket.API.Models;
 
 namespace nomo_bucket_api.Data.interfaces {
     public interface IFeedRepository {
-        Task<PagedList<FeedItem>> GetFeed (FeedParams feedParams);
+        Task<PagedList<FeedItem>> GetFeed (FeedParams feedParams, int userId);
         Task<FeedItem> Add (FeedItem feedItem);
         Task<bool> SaveAll ();
 
