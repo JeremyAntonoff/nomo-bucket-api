@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,8 @@ namespace NomoBucket.API.Controllers
     [HttpGet]
 public async Task<IActionResult> getFeed([FromQuery]FeedParams feedParams)
     {
-      var feed = await _feedRepo.GetFeed(feedParams);
+      var userId = this.User.Claims.First(c => c.Type == "userId").Value;
+      var feed = await _feedRepo.GetFeed(feedParams, int.Parse(userId));
       if (feed == null)
       {
         throw new System.Exception("Could not retrieve feed");
