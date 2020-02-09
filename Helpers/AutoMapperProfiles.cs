@@ -1,4 +1,6 @@
 using AutoMapper;
+using nomo_bucket_api.Dtos;
+using nomo_bucket_api.Models;
 using NomoBucket.API.Dtos;
 using NomoBucket.API.Models;
 
@@ -19,9 +21,8 @@ namespace NomoBucket.API.Helpers
             CreateMap<UserUpdateDto, User>();
             CreateMap<BucketListItemCreationDto, BucketListItem>();
             CreateMap<BucketListItem, FeedItem>();
-
-
-
+            CreateMap<MessageCreationDto, Message>();
+            CreateMap<Message, MessageDto>();
         }
     }
 }

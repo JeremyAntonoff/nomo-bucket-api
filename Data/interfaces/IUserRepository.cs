@@ -7,12 +7,13 @@ namespace NomoBucket.API.Data
 {
     public interface IUserRepository
     {
-         Task<User> GetUser(int userId);
-         Task<IEnumerable<User>> GetUsers();
+        Task<User> GetUser(int userId);
+        Task<IEnumerable<User>> GetUsers();
+        Task<IEnumerable<int>> GetFollowsForUser(int id);
+        Task<Follow> GetFollow(int followerId, int followeeId);
+        Task AddFollow(Follow follow);
+        void RemoveFollow(Follow follow);
 
-         Task<bool> doesFollowExist(int followerId, int followeeId);
-
-         Task AddFollow(Follow follow);
-         Task<bool> SaveAll();
+        Task<bool> SaveAll();
     }
 }

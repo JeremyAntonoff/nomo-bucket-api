@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -16,7 +17,7 @@ namespace NomoBucket.API.Controllers
 {
     [Authorize]
     [ServiceFilter(typeof(UserActivity))]
-    [Route("/api/{controller}")]
+    [Route("/api/[controller]")]
     [ApiController]
 
     public class UsersController : ControllerBase
@@ -54,6 +55,11 @@ namespace NomoBucket.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, UserUpdateDto userToUpdate)
         {
+            var userIdFromToken = this.User.Claims.First(c => c.Type == "userId").Value;
+            if (int.Parse(userIdFromToken) != id)
+            {
+                return Unauthorized();
+            }
 
             var repoUser = await _repo.GetUser(id);
             _mapper.Map(userToUpdate, repoUser);
@@ -69,6 +75,11 @@ namespace NomoBucket.API.Controllers
         [HttpPut("{id}/photo")]
         public async Task<IActionResult> UpdateUserPhoto(int id, [FromForm]PhotoDto userPhotoToUpdate)
         {
+            var userIdFromToken = this.User.Claims.First(c => c.Type == "userId").Value;
+            if (int.Parse(userIdFromToken) != id)
+            {
+                return Unauthorized();
+            }
             var cloudinaryHelper = new CloudinaryHelper(_CloudinaryConfig);
             var repoUser = await _repo.GetUser(id);
 
@@ -99,23 +110,46 @@ namespace NomoBucket.API.Controllers
             }
             throw new Exception($"Updating user photo with ID: {id} Failed");
         }
+        [HttpGet("{id}/follows")]
+        public async Task<IActionResult> GetFollows(int id, int followeeId)
+        {
+            var userIdFromToken = this.User.Claims.First(c => c.Type == "userId").Value;
+            if (int.Parse(userIdFromToken) != id)
+            {
+                return Unauthorized();
+            }
+            var follows = await _repo.GetFollowsForUser(id);
+            if (follows != null)
+            {
+                return Ok(follows);
+            }
+            return Ok(new int[0]);
+        }
         [HttpPost("{id}/follow/{followeeId}")]
         public async Task<IActionResult> followUser(int id, int followeeId)
         {
-            var followExists = await _repo.doesFollowExist(id, followeeId);
-            if (followExists == true)
+            var userIdFromToken = this.User.Claims.First(c => c.Type == "userId").Value;
+            if (int.Parse(userIdFromToken) != id)
             {
-                return BadRequest("You are already following this user");
+                return Unauthorized();
             }
             if (await _repo.GetUser(followeeId) == null)
             {
                 return NotFound();
             }
-            var follow = new Follow();
-            follow.FollowerId = id;
-            follow.FolloweeId = followeeId;
+            var followExists = await _repo.GetFollow(id, followeeId);
+            if (followExists != null)
+            {
+                _repo.RemoveFollow(followExists);
+            }
+            else
+            {
+                var follow = new Follow();
+                follow.FollowerId = id;
+                follow.FolloweeId = followeeId;
 
-            await _repo.AddFollow(follow);
+                await _repo.AddFollow(follow);
+            }
 
             if (await _repo.SaveAll())
             {

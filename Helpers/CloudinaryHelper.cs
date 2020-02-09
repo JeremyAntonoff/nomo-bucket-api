@@ -42,7 +42,6 @@ namespace NomoBucket.API.Helpers
             return true;
         }
         return false;
-        
     }
   }
 }

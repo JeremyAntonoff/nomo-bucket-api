@@ -10,30 +10,31 @@ using NomoBucket.API.Models;
 
 namespace NomoBucket.API.Controllers
 {
-  [ApiController]
-  [Route("/api/[controller]")]
-  public class FeedController : ControllerBase
-  {
-    private readonly IFeedRepository _feedRepo;
-    private readonly IMapper _mapper;
-    public FeedController(IFeedRepository feedRepo, IMapper mapper)
+    [ServiceFilter(typeof(UserActivity))]
+    [ApiController]
+    [Route("/api/[controller]")]
+    public class FeedController : ControllerBase
     {
-      _mapper = mapper;
-      _feedRepo = feedRepo;
+        private readonly IFeedRepository _feedRepo;
+        private readonly IMapper _mapper;
+        public FeedController(IFeedRepository feedRepo, IMapper mapper)
+        {
+            _mapper = mapper;
+            _feedRepo = feedRepo;
 
+        }
+        [HttpGet]
+        public async Task<IActionResult> getFeed([FromQuery]FeedParams feedParams)
+        {
+            var userId = this.User.Claims.First(c => c.Type == "userId").Value;
+            var feed = await _feedRepo.GetFeed(feedParams, int.Parse(userId));
+            if (feed == null)
+            {
+                throw new System.Exception("Could not retrieve feed");
+            }
+            var mappedFeed = _mapper.Map<IEnumerable<FeedItem>>(feed);
+            Response.AddPagination(feed.CurrentPage, feed.PageSize, feed.TotalCount, feed.TotalPages);
+            return Ok(mappedFeed);
+        }
     }
-    [HttpGet]
-public async Task<IActionResult> getFeed([FromQuery]FeedParams feedParams)
-    {
-      var userId = this.User.Claims.First(c => c.Type == "userId").Value;
-      var feed = await _feedRepo.GetFeed(feedParams, int.Parse(userId));
-      if (feed == null)
-      {
-        throw new System.Exception("Could not retrieve feed");
-      }
-      var mappedFeed =  _mapper.Map<IEnumerable<FeedItem>>(feed);
-      Response.AddPagination(feed.CurrentPage, feed.PageSize, feed.TotalCount, feed.TotalPages);
-      return Ok(mappedFeed);
-    }
-  }
 }

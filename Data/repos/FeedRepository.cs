@@ -53,5 +53,17 @@ namespace NomoBucket.API.Data.repos
             var changes = await _context.SaveChangesAsync();
             return changes > 0;
         }
+
+        public async Task<bool> DeleteFeedItemByPhotoUrl(string photoUrl)
+        {
+            var deletedItem = await _context.FeedItems.FirstOrDefaultAsync(f => f.CompletedPhotoUrl == photoUrl);
+            if (deletedItem != null)
+            {
+                _context.Remove(deletedItem);
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using nomo_bucket_api.Data.interfaces;
+using nomo_bucket_api.Data.repos;
 using NomoBucket.API.Config;
 using NomoBucket.API.Data;
 using NomoBucket.API.Data.repos;
@@ -42,14 +43,11 @@ namespace NomoBucket.API
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBucketListRepository, BucketListRepository>();
             services.AddScoped<IFeedRepository, FeedRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<UserActivity>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-            .AddJsonOptions(opt =>
-            {
-                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            });
             services.AddCors();
+            services.AddMvc();
             services.AddTransient<Seed>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {

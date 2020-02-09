@@ -11,6 +11,8 @@ namespace NomoBucket.API.Data
         public DbSet<BucketListItem> BucketListItems { get; set; }
         public DbSet<FeedItem> FeedItems { get; set; }
         public DbSet<Follow> Follows { get; set; }
+        public DbSet<Message> Messages { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,6 +31,17 @@ namespace NomoBucket.API.Data
             .HasForeignKey(u => u.FollowerId)
             .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Message>()
+            .HasOne(m => m.Sender)
+            .WithMany(u => u.MessagesSent)
+            .HasForeignKey(m => m.SenderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Message>()
+            .HasOne(m => m.Receiver)
+            .WithMany(u => u.MessagesReceived)
+            .HasForeignKey(u => u.ReceiverId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
