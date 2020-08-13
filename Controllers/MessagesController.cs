@@ -101,7 +101,7 @@ namespace nomo_bucket_api.Controllers
 
             if (savedChanges)
             {
-                return CreatedAtRoute("GetMessage", new { id = messageToSave.Id }, messageToReturn);
+                return CreatedAtRoute("GetMessage", new { id = messageToSave.Id, userId }, messageToReturn);
             }
             throw new Exception("Could not create message");
         }
